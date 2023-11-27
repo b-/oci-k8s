@@ -109,8 +109,8 @@ resource "oci_containerengine_cluster" "k8s_cluster" {
 
   options {
     add_ons {
-      is_kubernetes_dashboard_enabled = false
-      is_tiller_enabled               = false
+      is_kubernetes_dashboard_enabled = true
+      is_tiller_enabled               = true
     }
     kubernetes_network_config {
       pods_cidr     = "10.244.0.0/16"
