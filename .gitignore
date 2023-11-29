@@ -1,2 +1,4 @@
 .env
 *.code-workspace
+free-k8s-config
+*/.terraform

@@ -35,6 +35,40 @@ resource "oci_core_security_list" "public_subnet_sl" {
     protocol         = "all"
   }
 
+  egress_security_rules {
+    stateless        = false
+    destination      = "10.0.1.0/24"
+    destination_type = "CIDR_BLOCK"
+    protocol         = "6"
+    tcp_options {
+      min = 31600
+      max = 31600
+    }
+  }
+
+  egress_security_rules {
+    stateless        = false
+    destination      = "10.0.1.0/24"
+    destination_type = "CIDR_BLOCK"
+    protocol         = "6"
+    tcp_options {
+      min = 10256
+      max = 10256
+    }
+  }
+
+  ingress_security_rules {
+    protocol    = "6"
+    source      = "0.0.0.0/0"
+    source_type = "CIDR_BLOCK"
+    stateless   = false
+
+    tcp_options {
+      max = 80
+      min = 80
+    }
+  }
+
   ingress_security_rules {
     stateless   = false
     source      = "10.0.0.0/16"
@@ -72,6 +106,26 @@ resource "oci_core_security_list" "private_subnet_sl" {
     source      = "10.0.0.0/16"
     source_type = "CIDR_BLOCK"
     protocol    = "all"
+  }
+  ingress_security_rules {
+    stateless   = false
+    source      = "10.0.0.0/24"
+    source_type = "CIDR_BLOCK"
+    protocol    = "6"
+    tcp_options {
+      min = 10256
+      max = 10256
+    }
+  }
+  ingress_security_rules {
+    stateless   = false
+    source      = "10.0.0.0/24"
+    source_type = "CIDR_BLOCK"
+    protocol    = "6"
+    tcp_options {
+      min = 31600
+      max = 31600
+    }
   }
 }
 
@@ -156,4 +210,11 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
     value = "free-k8s-cluster"
   }
   ssh_public_key = var.ssh_public_key
+}
+
+resource "oci_artifacts_container_repository" "docker_repository" {
+  compartment_id = var.compartment_id
+  display_name   = "free-kubernetes-nginx"
+  is_immutable   = false
+  is_public      = false
 }
